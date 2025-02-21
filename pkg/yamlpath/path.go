@@ -435,14 +435,17 @@ func filterThen(filterLexemes []lexeme, p *Path) *Path {
 	filter := newFilter(newFilterNode(filterLexemes))
 	return new(func(node, root *yaml.Node) yit.Iterator {
 		its := []yit.Iterator{}
-		if node.Kind == yaml.SequenceNode {
-			for _, c := range node.Content {
-				if filter(c, root) {
-					its = append(its, compose(yit.FromNode(c), p, root))
+		// filter only applies to non-mapping nodes
+		if node.Kind != yaml.MappingNode {
+			if node.Kind == yaml.SequenceNode {
+				for _, c := range node.Content {
+					if filter(c, root) {
+						its = append(its, compose(yit.FromNode(c), p, root))
+					}
 				}
+			} else if filter(node, root) {
+				its = append(its, compose(yit.FromNode(node), p, root))
 			}
-		} else if filter(node, root) {
-			its = append(its, compose(yit.FromNode(node), p, root))
 		}
 		return yit.FromIterators(its...)
 	})

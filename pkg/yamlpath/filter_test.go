@@ -425,6 +425,30 @@ y: b
 			match: false,
 		},
 		{
+			name:   "string comparison filter, path greater than literal, match",
+			filter: `@.x>"a"`,
+			yamlDoc: `---
+x: 'b'
+`,
+			match: true,
+		},
+		{
+			name:   "string comparison filter, literal lower than path, match",
+			filter: `@.x<"a"`,
+			yamlDoc: `---
+x: 'B'
+`,
+			match: true,
+		},
+		{
+			name:   "string comparison filter, path greater or equal than literal, match",
+			filter: `@.x>="b"`,
+			yamlDoc: `---
+x: 'b'
+`,
+			match: true,
+		},
+		{
 			name:    "comparison filter, string literal to numeric literal, no match",
 			filter:  "'x'==7",
 			yamlDoc: "",
