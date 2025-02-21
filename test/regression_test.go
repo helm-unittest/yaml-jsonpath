@@ -7,17 +7,17 @@
 package test
 
 import (
-	"io/ioutil"
+	"os"
 	"sort"
 	"testing"
 
 	"github.com/stretchr/testify/require"
 	"github.com/vmware-labs/yaml-jsonpath/pkg/yamlpath"
-	"gopkg.in/yaml.v3"
+	yaml "sigs.k8s.io/yaml/goyaml.v3"
 )
 
 func TestRegressionSuite(t *testing.T) {
-	y, err := ioutil.ReadFile("./testdata/regression_suite.yaml")
+	y, err := os.ReadFile("./testdata/regression_suite.yaml")
 	if err != nil {
 		t.Error(err)
 	}

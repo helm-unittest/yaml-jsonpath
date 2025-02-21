@@ -12,7 +12,7 @@ import (
 
 	"github.com/stretchr/testify/require"
 	"github.com/vmware-labs/yaml-jsonpath/pkg/yamlpath"
-	"gopkg.in/yaml.v3"
+	yaml "sigs.k8s.io/yaml/goyaml.v3"
 )
 
 func TestFind(t *testing.T) {
@@ -970,13 +970,9 @@ price: 12.99
 			expectedPathErr: "",
 		},
 		{
-			name: "map filter",
-			path: `$.store.bicycle[?(@.color == "red")]`,
-			expectedStrings: []string{
-				`color: red
-price: 19.95
-`,
-			},
+			name:            "map filter",
+			path:            `$.store.bicycle[?(@.color == "red")]`,
+			expectedStrings: []string{},
 		},
 	}
 

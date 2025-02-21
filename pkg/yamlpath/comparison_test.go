@@ -97,6 +97,33 @@ func TestComparators(t *testing.T) {
 			},
 		},
 		{
+			name:       "string greater than",
+			comparator: greaterThan,
+			comparisons: map[comparison]bool{
+				compareStrings("a", "a"): false,
+				compareStrings("a", "b"): false,
+				compareStrings("b", "a"): true,
+			},
+		},
+		{
+			name:       "string greater than or equal",
+			comparator: greaterThanOrEqual,
+			comparisons: map[comparison]bool{
+				compareStrings("a", "a"): true,
+				compareStrings("a", "b"): false,
+				compareStrings("b", "a"): true,
+			},
+		},
+		{
+			name:       "string less than or equal",
+			comparator: lessThanOrEqual,
+			comparisons: map[comparison]bool{
+				compareStrings("a", "a"): true,
+				compareStrings("a", "b"): true,
+				compareStrings("b", "a"): false,
+			},
+		},
+		{
 			name:       "float64 equal",
 			comparator: equal,
 			comparisons: map[comparison]bool{
@@ -177,9 +204,9 @@ func TestComparators(t *testing.T) {
 				compareNodeValues(typedValueOfFloat("1.1"), typedValueOfFloat("1.2")): false,
 				compareNodeValues(typedValueOfFloat("1.1"), typedValueOfFloat("1.1")): false,
 				compareNodeValues(typedValueOfFloat("1.2"), typedValueOfFloat("1.1")): true,
-				compareNodeValues(typedValueOfString("a"), typedValueOfString("a")):   false, // should be excluded by lexer
-				compareNodeValues(typedValueOfFloat("1.0"), typedValueOfString("a")):  false, // should be excluded by lexer
-				compareNodeValues(typedValueOfString("a"), typedValueOfFloat("1.0")):  false, // should be excluded by lexer
+				compareNodeValues(typedValueOfString("a"), typedValueOfString("a")):   false,
+				compareNodeValues(typedValueOfFloat("1.0"), typedValueOfString("a")):  false,
+				compareNodeValues(typedValueOfString("a"), typedValueOfFloat("1.0")):  true,
 			},
 		},
 		{
@@ -189,9 +216,9 @@ func TestComparators(t *testing.T) {
 				compareNodeValues(typedValueOfFloat("1.1"), typedValueOfFloat("1.2")): false,
 				compareNodeValues(typedValueOfFloat("1.1"), typedValueOfFloat("1.1")): true,
 				compareNodeValues(typedValueOfFloat("1.2"), typedValueOfFloat("1.1")): true,
-				compareNodeValues(typedValueOfString("a"), typedValueOfString("a")):   true,  // should be excluded by lexer
-				compareNodeValues(typedValueOfFloat("1.0"), typedValueOfString("a")):  false, // should be excluded by lexer
-				compareNodeValues(typedValueOfString("a"), typedValueOfFloat("1.0")):  false, // should be excluded by lexer
+				compareNodeValues(typedValueOfString("a"), typedValueOfString("a")):   true,
+				compareNodeValues(typedValueOfFloat("1.0"), typedValueOfString("a")):  false,
+				compareNodeValues(typedValueOfString("a"), typedValueOfFloat("1.0")):  true,
 			},
 		},
 		{
@@ -201,9 +228,9 @@ func TestComparators(t *testing.T) {
 				compareNodeValues(typedValueOfFloat("1.1"), typedValueOfFloat("1.2")): true,
 				compareNodeValues(typedValueOfFloat("1.1"), typedValueOfFloat("1.1")): false,
 				compareNodeValues(typedValueOfFloat("1.2"), typedValueOfFloat("1.1")): false,
-				compareNodeValues(typedValueOfString("a"), typedValueOfString("a")):   false, // should be excluded by lexer
-				compareNodeValues(typedValueOfFloat("1.0"), typedValueOfString("a")):  false, // should be excluded by lexer
-				compareNodeValues(typedValueOfString("a"), typedValueOfFloat("1.0")):  false, // should be excluded by lexer
+				compareNodeValues(typedValueOfString("a"), typedValueOfString("a")):   false,
+				compareNodeValues(typedValueOfFloat("1.0"), typedValueOfString("a")):  true,
+				compareNodeValues(typedValueOfString("a"), typedValueOfFloat("1.0")):  false,
 			},
 		},
 		{
@@ -213,9 +240,9 @@ func TestComparators(t *testing.T) {
 				compareNodeValues(typedValueOfFloat("1.1"), typedValueOfFloat("1.2")): true,
 				compareNodeValues(typedValueOfFloat("1.1"), typedValueOfFloat("1.1")): true,
 				compareNodeValues(typedValueOfFloat("1.2"), typedValueOfFloat("1.1")): false,
-				compareNodeValues(typedValueOfString("a"), typedValueOfString("a")):   true,  // should be excluded by lexer
-				compareNodeValues(typedValueOfFloat("1.0"), typedValueOfString("a")):  false, // should be excluded by lexer
-				compareNodeValues(typedValueOfString("a"), typedValueOfFloat("1.0")):  false, // should be excluded by lexer
+				compareNodeValues(typedValueOfString("a"), typedValueOfString("a")):   true,
+				compareNodeValues(typedValueOfFloat("1.0"), typedValueOfString("a")):  true,
+				compareNodeValues(typedValueOfString("a"), typedValueOfFloat("1.0")):  false,
 			},
 		},
 	}

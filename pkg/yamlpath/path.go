@@ -12,7 +12,7 @@ import (
 	"unicode/utf8"
 
 	"github.com/dprotaso/go-yit"
-	"gopkg.in/yaml.v3"
+	yaml "sigs.k8s.io/yaml/goyaml.v3"
 )
 
 // Path is a compiled YAML path expression.
@@ -435,14 +435,15 @@ func filterThen(filterLexemes []lexeme, p *Path) *Path {
 	filter := newFilter(newFilterNode(filterLexemes))
 	return new(func(node, root *yaml.Node) yit.Iterator {
 		its := []yit.Iterator{}
-		if node.Kind == yaml.SequenceNode {
-			for _, c := range node.Content {
-				if filter(c, root) {
-					its = append(its, compose(yit.FromNode(c), p, root))
+		// filter only applies to non-mapping nodes
+		if node.Kind != yaml.MappingNode {
+			if node.Kind == yaml.SequenceNode {
+				for _, c := range node.Content {
+					if filter(c, root) {
+						its = append(its, compose(yit.FromNode(c), p, root))
+					}
 				}
-			}
-		} else {
-			if filter(node, root) {
+			} else if filter(node, root) {
 				its = append(its, compose(yit.FromNode(node), p, root))
 			}
 		}

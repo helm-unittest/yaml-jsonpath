@@ -57,6 +57,14 @@ func lessThanOrEqual(c comparison) bool {
 }
 
 func compareStrings(a, b string) comparison {
+	if a < b {
+		return compareLessThan
+	}
+
+	if a > b {
+		return compareGreaterThan
+	}
+
 	if a == b {
 		return compareEqual
 	}
