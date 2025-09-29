@@ -285,10 +285,7 @@ func (l *lexer) consumedWhitespaced(tokens ...string) bool {
 // consumeWhitespace consumes any leading whitespace.
 func (l *lexer) consumeWhitespace() {
 	pos := l.pos
-	for {
-		if pos >= len(l.input) {
-			break
-		}
+	for pos < len(l.input) {
 		rune, width := utf8.DecodeRuneInString(l.input[pos:])
 		if !unicode.IsSpace(rune) {
 			break
@@ -634,10 +631,7 @@ func lexSubPath(l *lexer) stateFn {
 func lexOptionalArrayIndex(l *lexer) stateFn {
 	if l.consumed(leftBracket, bracketQuote, bracketDoubleQuote, filterBegin) {
 		subscript := false
-		for {
-			if l.consumed(rightBracket) {
-				break
-			}
+		for !l.consumed(rightBracket) {
 			if l.next() == eof {
 				return l.errorf("unmatched %s", leftBracket)
 			}
@@ -881,7 +875,7 @@ func lexNumericLiteral(l *lexer, nextState stateFn) (stateFn, bool) {
 				float = true
 				continue
 			}
-			if !(n >= '0' && n <= '9') {
+			if n < '0' || n > '9' {
 				break
 			}
 		}

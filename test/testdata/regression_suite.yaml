@@ -796,6 +796,7 @@ queries:
     selector: "$[?(@.id==2)]"
     document: {"id": 2}
     consensus: []
+    exclude: true
     not-found-consensus: NOT_FOUND
   - id: filter_expression_with_equals_string
     selector: "$[?(@.key==\"value\")]"
@@ -939,6 +940,7 @@ queries:
     document: [{"some": "some value"}, {"key": "value"}]
     consensus: []
     not-found-consensus: NOT_FOUND
+    exclude: true
   - id: filter_expression_with_value_after_recursive_descent
     selector: "$..[?(@.id)]"
     document: {"id": 2, "more": [{"id": 2}, {"more": {"id": 2}}, {"id": {"id": 2}}, [{"id": 2}]]}
