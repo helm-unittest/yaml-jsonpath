@@ -44,7 +44,7 @@ func slice(index string, length int) ([]int, error) {
 		present bool
 		value   int
 	}
-	var subscripts []subscript = []subscript{{false, 0}, {false, 0}, {false, 0}}
+	var subscripts = []subscript{{false, 0}, {false, 0}, {false, 0}}
 	const (
 		sFrom = iota
 		sTo

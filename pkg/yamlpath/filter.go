@@ -12,7 +12,7 @@ import (
 	"strconv"
 	"strings"
 
-	yaml "sigs.k8s.io/yaml/goyaml.v3"
+	yaml "go.yaml.in/yaml/v3"
 )
 
 type filter func(node, root *yaml.Node) bool
@@ -214,7 +214,7 @@ const (
 )
 
 func typedValueOfNode(node *yaml.Node) typedValue {
-	var t valueType = unknownValueType
+	var t = unknownValueType
 	if node.Kind == yaml.ScalarNode {
 		switch node.ShortTag() {
 		case nullTag:

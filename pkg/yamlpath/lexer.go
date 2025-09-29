@@ -9,6 +9,7 @@ package yamlpath
 import (
 	"fmt"
 	"regexp"
+	"slices"
 	"strconv"
 	"strings"
 	"unicode"
@@ -246,10 +247,8 @@ func (l *lexer) consume(s string) {
 // token and returns true. Otherwise, it returns false.
 func (l *lexer) consumed(token string, except ...string) bool {
 	if l.hasPrefix(token) {
-		for _, e := range except {
-			if l.hasPrefix(e) {
-				return false
-			}
+		if slices.ContainsFunc(except, l.hasPrefix) {
+			return false
 		}
 		l.consume(token)
 		return true
@@ -286,10 +285,7 @@ func (l *lexer) consumedWhitespaced(tokens ...string) bool {
 // consumeWhitespace consumes any leading whitespace.
 func (l *lexer) consumeWhitespace() {
 	pos := l.pos
-	for {
-		if pos >= len(l.input) {
-			break
-		}
+	for pos < len(l.input) {
 		rune, width := utf8.DecodeRuneInString(l.input[pos:])
 		if !unicode.IsSpace(rune) {
 			break
@@ -315,12 +311,7 @@ func (l *lexer) peek() (rune rune) {
 // Otherwise, it returns false.
 func (l *lexer) peeked(token string, except ...string) bool {
 	if l.hasPrefix(token) {
-		for _, e := range except {
-			if l.hasPrefix(e) {
-				return false
-			}
-		}
-		return true
+		return !slices.ContainsFunc(except, l.hasPrefix)
 	}
 	return false
 }
@@ -410,7 +401,7 @@ func (l *lexer) hasPrefix(p string) bool {
 }
 
 // errorf returns an error lexeme with context and terminates the scan
-func (l *lexer) errorf(format string, args ...interface{}) stateFn {
+func (l *lexer) errorf(format string, args ...any) stateFn {
 	l.items <- lexeme{
 		typ: lexemeError,
 		val: fmt.Sprintf("%s at position %d, following %q", fmt.Sprintf(format, args...), l.pos, l.context()),
@@ -419,7 +410,7 @@ func (l *lexer) errorf(format string, args ...interface{}) stateFn {
 }
 
 // rawErrorf returns an error lexeme with no context and terminates the scan
-func (l *lexer) rawErrorf(format string, args ...interface{}) stateFn {
+func (l *lexer) rawErrorf(format string, args ...any) stateFn {
 	l.items <- lexeme{
 		typ: lexemeError,
 		val: fmt.Sprintf(format, args...),
@@ -640,10 +631,7 @@ func lexSubPath(l *lexer) stateFn {
 func lexOptionalArrayIndex(l *lexer) stateFn {
 	if l.consumed(leftBracket, bracketQuote, bracketDoubleQuote, filterBegin) {
 		subscript := false
-		for {
-			if l.consumed(rightBracket) {
-				break
-			}
+		for !l.consumed(rightBracket) {
 			if l.next() == eof {
 				return l.errorf("unmatched %s", leftBracket)
 			}
@@ -887,7 +875,7 @@ func lexNumericLiteral(l *lexer, nextState stateFn) (stateFn, bool) {
 				float = true
 				continue
 			}
-			if !(n >= '0' && n <= '9') {
+			if n < '0' || n > '9' {
 				break
 			}
 		}

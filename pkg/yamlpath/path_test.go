@@ -12,7 +12,7 @@ import (
 
 	"github.com/stretchr/testify/require"
 	"github.com/vmware-labs/yaml-jsonpath/pkg/yamlpath"
-	yaml "sigs.k8s.io/yaml/goyaml.v3"
+	yaml "go.yaml.in/yaml/v3"
 )
 
 func TestFind(t *testing.T) {
@@ -970,9 +970,13 @@ price: 12.99
 			expectedPathErr: "",
 		},
 		{
-			name:            "map filter",
-			path:            `$.store.bicycle[?(@.color == "red")]`,
-			expectedStrings: []string{},
+			name: "map filter",
+			path: `$.store.bicycle[?(@.color == "red")]`,
+			expectedStrings: []string{
+				`color: red
+price: 19.95
+`,
+			},
 		},
 	}
 
@@ -1011,7 +1015,8 @@ price: 12.99
 
 				err = e.Encode(a)
 				require.NoError(t, err)
-				e.Close()
+				cerr := e.Close()
+				require.NoError(t, cerr)
 				actualStrings = append(actualStrings, buf.String())
 			}
 
@@ -1186,7 +1191,8 @@ another: entry`,
 
 				err = e.Encode(a)
 				require.NoError(t, err)
-				e.Close()
+				cerr := e.Close()
+				require.NoError(t, cerr)
 				actualStrings = append(actualStrings, buf.String())
 			}
 

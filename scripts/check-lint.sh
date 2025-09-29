@@ -2,4 +2,4 @@
 #
 # run golangci-lint
 
-golangci-lint -E bodyclose,misspell,gofmt,unconvert,goimports,gocritic run
+golangci-lint run --enable bodyclose,gocritic,misspell,unconvert
