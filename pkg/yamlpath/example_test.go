@@ -13,7 +13,7 @@ import (
 
 	"github.com/sergi/go-diff/diffmatchpatch"
 	"github.com/vmware-labs/yaml-jsonpath/pkg/yamlpath"
-	yaml "sigs.k8s.io/yaml/goyaml.v3"
+	yaml "go.yaml.in/yaml/v3"
 )
 
 // Example uses a Path to find certain nodes and replace their content. Unlike a global change, it avoids false positives.
@@ -59,7 +59,13 @@ spec:
 
 	var buf bytes.Buffer
 	e := yaml.NewEncoder(&buf)
-	defer e.Close()
+	defer func() {
+		cerr := e.Close()
+
+		if cerr != nil {
+			log.Printf("Error: cannot close encoder: %v", cerr)
+		}
+	}()
 	e.SetIndent(2)
 
 	err = e.Encode(&n)

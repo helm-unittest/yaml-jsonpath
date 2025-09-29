@@ -15,7 +15,7 @@ import (
 	"strings"
 
 	"github.com/vmware-labs/yaml-jsonpath/pkg/yamlpath"
-	yaml "sigs.k8s.io/yaml/goyaml.v3"
+	yaml "go.yaml.in/yaml/v3"
 )
 
 func main() {
@@ -170,7 +170,13 @@ textarea, input {
 func encode(a *yaml.Node) (string, error) {
 	var buf bytes.Buffer
 	e := yaml.NewEncoder(&buf)
-	defer e.Close()
+	defer func() {
+		cerr := e.Close()
+
+		if cerr != nil {
+			log.Println(cerr)
+		}
+	}()
 	e.SetIndent(2)
 
 	if err := e.Encode(a); err != nil {

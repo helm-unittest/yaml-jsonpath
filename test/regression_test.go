@@ -13,7 +13,7 @@ import (
 
 	"github.com/stretchr/testify/require"
 	"github.com/vmware-labs/yaml-jsonpath/pkg/yamlpath"
-	yaml "sigs.k8s.io/yaml/goyaml.v3"
+	yaml "go.yaml.in/yaml/v3"
 )
 
 func TestRegressionSuite(t *testing.T) {
